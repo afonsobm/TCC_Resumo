@@ -6,6 +6,7 @@
 \title{Desenvolvimento de base de dados para treinamento de redes neurais de reconhecimento de voz
 através da geração de aúdios com resposta ao impulso simuladas por técnicas de data augmentation [RESUMO]}
 \author{Bruno Machado Afonso}
+\date{18 de Abril de 2021}
 
 \begin{document}
 \maketitle
@@ -30,19 +31,45 @@ partindo de amostras de voz e resposta ao impulso de salas já existentes.
 A tese propõe em utilizar técnicas de data augmentation para gerar um grande volume
 de vozes reverberadas à partir de um pequeno conjunto de amostras.
 
+\hfill
 
 \section{Resposta ao Impulso de uma sala (RIR) e técnicas de Data Augmentation}
 
-\textcolor{red}{\LARGE{[Falar sobre RIR]}} \newline
+Um sinal de voz gravado em um ambiente pode ser interpretado como a junção de três
+partes; uma amostra de voz pura, sem nenhum fator externo ou reverberação envolvido,
+convoluída com a Resposta ao Impulso da sala (RIR) onde ocorre a gravação, somada à
+um sinal de rúido, podendo este ser pontual ou um ruído de ambiente.
+A RIR representa um modelo acústico do ambiente, que define como um receptor acústico
+irá receber caso o áudio seja gerado e percebido de dentro deste ambiente.
+Uma definição de Resposta ao Impulso é a de uma função que registra a pressão sonora 
+ao longo do tempo em um ambiente fechado após uma excitação extremamente curta e 
+cheia de energia (dirac).
 
+Nessa tese é proposto uma forma de gerar RIR simuladas partindo de uma RIR real, ou seja,
+gravando um áudio que representa um impulso em um ambiente fechado real, e alterando
+suas propriedades. Seguimos o que foi proposto no artigo de data augmentation
+para respostas ao impulso para estimação do modelo acústico \cite{RIR_Data_Aug}, onde
+geramos RIR simuladas modificando as propriedades de Tempo de Decaimento (T60) e de
+razão entre áudio direto e reverberado (DRR). Através dessas duas propriedades, conseguimos
+definir praticamente todos os RIR possíveis de serem gravados de forma artificial.
 
+Para gerar as amostras de vozes reverberadas que compõe a base de dados, seguimos o
+que é proposto no artigo de estudo de data augmentation em vozes reverberadas
+\cite{Speech_Rec}, onde convoluímos sinais de voz puros com os RIR simulados que 
+foram gerados anteriormente. Além disso, é acrescentado a essa sinal de voz reverberado
+rúidos diversos, que são caracterizados de duas formas: ruídos pontuais e ruídos de ambiente.
+Os ruídos pontuais são amostras de aúdio curta que podem ser introduzidos em qualquer momento
+da fala, já os ruídos de ambiente são sons constantes ao fundo da gravação para simular
+um ambiente externo. Os ruídos foram extraídos da biblioteca MUSAN \cite{noiseLib}.
 
-\textcolor{red}{\LARGE{[Falar sobre artigo de DA no RIR]}} \newline
-\textcolor{red}{\LARGE{[Falar sobre artigo de ruidos em voz]}} \newline
+Através desses dois passos, conseguimos gerar vários sinais de vozes reverberados artificialmente.
+A simulação do RIR tem por objetivo colocar a amostra de voz em vários ambientes fechados,
+e já os ruídos ajudam drasticamente no treinamento de redes neurais impedindo que
+as redes fiquem viciadas em características muito específicas da fala durante o treinamento, 
+pois eles tendem a simular os fatores externos que podem estar envolvidos em uma
+gravação real.
 
-
-\cite{RIR_Data_Aug}
-\cite{Speech_Rec}
+\hfill
 
 \bibliography{tcc_resumo_bib} 
 \bibliographystyle{ieeetr}
